@@ -133,3 +133,12 @@ class Yahtzee(ScoreCategory):
     
     def score(self, dice_values):
         return 50 if self.check(dice_values) else 0
+class Chance(ScoreCategory):
+    def __init__(self):
+        super().__init__("Chance")
+
+    def check(self, dice_values):
+        return True  # Zawsze pasuje
+
+    def score(self, dice_values):
+        return sum(dice_values)  # Zawsze zwraca sumę wszystkich oczek

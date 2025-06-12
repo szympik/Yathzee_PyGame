@@ -4,7 +4,7 @@ import os
 import sys
 from collections import Counter 
 from score_category import ScoreCategory
-from score_category import Ones, Twos, Threes, Fours, Fives, Sixes, ThreeOfAKind, FourOfAKind, FullHouse, SmallStraight, LargeStraight, Yahtzee
+from score_category import Ones, Twos, Threes, Fours, Fives, Sixes, ThreeOfAKind, FourOfAKind, FullHouse, SmallStraight, LargeStraight, Yahtzee,Chance
 # Globalne stałe
 WIDTH, HEIGHT = 1800, 1000
 

@@ -10,7 +10,6 @@ class Scoreboard:
         self.font = pygame.font.Font(None, 32)
         self.x, self.y = x, y
         self.width, self.height = 250, 40
-
         self.categories = [
             "Ones", "Twos", "Threes", "Fours", "Fives", "Sixes",
             "Three of a Kind", "Four of a Kind", "Full House",
