@@ -20,6 +20,14 @@ def draw_cup(screen):
     cup_y = HEIGHT - 350
     screen.blit(cup_image, (cup_x, cup_y))
 
+def draw_game_over(screen, total_score, font):
+    screen.fill(BLACK)
+    text1 = font.render("Koniec gry!", True, (255, 255, 255))
+    text2 = font.render(f"Twój wynik: {total_score}", True, (255, 255, 255))
+    screen.blit(text1, (WIDTH // 2 - text1.get_width() // 2, HEIGHT // 2 - 40))
+    screen.blit(text2, (WIDTH // 2 - text2.get_width() // 2, HEIGHT // 2 + 10))
+    pygame.display.flip()
+
 def cup_animation(screen):
     total_frames = 6
     images = {}
@@ -66,24 +74,28 @@ def cup_animation(screen):
 def get_dices(dices):
     return [dice.get_value() for dice in dices]
 
+
 def handle_events(event, dices, roll, reroll, roll_count, max_rolls):
     if event.type == pygame.QUIT:
         return False, roll_count
     elif event.type == pygame.MOUSEBUTTONDOWN:
+        if roll_count >= max_rolls:
+            for dice in dices:
+                dice.toggle_selected(event.pos)
+            return True, roll_count
+
         if roll.is_clicked(event.pos):
-            if roll_count < max_rolls:
-                cup_animation(screen)
-                for dice in dices:
-                    dice.start_roll(dices)
-                roll.hide()
-                reroll.show()
-                roll_count += 1
+            cup_animation(screen)
+            for dice in dices:
+                dice.start_roll(dices)
+            roll.hide()
+            reroll.show()
+            roll_count += 1
         elif reroll.is_clicked(event.pos):
-            if roll_count < max_rolls:
-                cup_animation(screen)
-                for dice in dices:
-                    dice.reroll(dices)
-                roll_count += 1
+            cup_animation(screen)
+            for dice in dices:
+                dice.reroll(dices)
+            roll_count += 1
         else:
             for dice in dices:
                 dice.toggle_selected(event.pos)
@@ -96,10 +108,12 @@ def update_dices(dices):
 
 background = pygame.image.load("img/dice_background.png")
 background = pygame.transform.scale(background, (1200, 800))
-def draw_turn_info(screen, current_turn, max_turns, font):
-    text = font.render(f"Runda: {current_turn} / {max_turns}", True, (255, 255, 255))
+
+def draw_turn_info(screen, current_turn, max_turns, roll_count, max_rolls, font):
+    text = font.render(f"Runda: {current_turn} / {max_turns}   Rzuty: {roll_count} / {max_rolls}", True, (255, 255, 255))
     screen.blit(text, (50, 10))
-def draw_game(screen, dices, roll, reroll, scoreboard, current_turn, max_turns, font):
+
+def draw_game(screen, dices, roll, reroll, scoreboard, current_turn, max_turns, roll_count, max_rolls, font):
     screen.fill(BLACK)
     screen.blit(background, (600, 0))
     scoreboard.draw(screen)
@@ -110,11 +124,13 @@ def draw_game(screen, dices, roll, reroll, scoreboard, current_turn, max_turns, 
 
     roll.draw(screen)
     reroll.draw(screen)
+
+    draw_turn_info(screen, current_turn, max_turns, roll_count, max_rolls, font)
+
     pygame.display.flip()
-    draw_turn_info(screen, current_turn, max_turns, font)
+
 
 def main():
-
     clock = pygame.time.Clock()
     dices = Dice.add_dice()
     roll = Button(WIDTH // 2 - 100, HEIGHT - 120, 140, 50, "Rzuć kostką")
@@ -123,18 +139,21 @@ def main():
     reroll.hide()
 
     current_turn = 1
-    max_turns = 13
+    max_turns = 3  # lub 13
     roll_count = 0
     max_rolls = 3
     scoreboard = Scoreboard(x=50, y=50)
+    font = pygame.font.Font(None, 36)
 
     running = True
+    game_over = False
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if scoreboard.handle_click(event.pos, get_dices(dices)):
+            elif not game_over and event.type == pygame.MOUSEBUTTONDOWN:
+                if roll_count > 0 and scoreboard.handle_click(event.pos, get_dices(dices)):
                     current_turn += 1
                     roll_count = 0
                     roll.show()
@@ -143,19 +162,23 @@ def main():
                         dice.reset()
 
                     if current_turn > max_turns:
-                        print("Koniec gry!")
-                        total = sum(score for score in scoreboard.values.values() if score)
-                        print(f"Twój wynik: {total}")
-                        running = False
+                        game_over = True
                 else:
                     running, roll_count = handle_events(event, dices, roll, reroll, roll_count, max_rolls)
 
-        if roll.visible and roll_count >= max_rolls:
-            roll.hide()
-            reroll.show()
+        if not game_over:
+            if roll.visible and roll_count >= max_rolls:
+                roll.hide()
+                reroll.show()
 
-        update_dices(dices)
-        draw_game(screen, dices, roll, reroll, scoreboard, current_turn, max_turns, font)
+            update_dices(dices)
+            draw_game(screen, dices, roll, reroll, scoreboard, current_turn, max_turns, roll_count, max_rolls, font)
+
+
+        else:
+            total = scoreboard.total_score()
+            draw_game_over(screen, total, font)
+
         clock.tick(60)
 
     pygame.quit()
