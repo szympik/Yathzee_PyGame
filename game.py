@@ -12,7 +12,7 @@ pygame.display.set_caption("Yahtzee")
 music = pygame.mixer.Sound('sound/muza.mp3')
 music.set_volume(0.0)
 music.play()
-
+font = pygame.font.Font(None, 36)
 def draw_cup(screen):
     cup_image = pygame.image.load("img/kubek_animacja/6.png")
     cup_image = pygame.transform.scale(cup_image, (400, 400))
@@ -66,32 +66,29 @@ def cup_animation(screen):
 def get_dices(dices):
     return [dice.get_value() for dice in dices]
 
-def handle_events(event, dices, roll, reroll, scoreboard):
+def handle_events(event, dices, roll, reroll, roll_count, max_rolls):
     if event.type == pygame.QUIT:
-        return False
+        return False, roll_count
     elif event.type == pygame.MOUSEBUTTONDOWN:
         if roll.is_clicked(event.pos):
-            cup_animation(screen)
-            for dice in dices:
-                dice.start_roll(dices)
-            roll.hide()
-            reroll.show()
-
+            if roll_count < max_rolls:
+                cup_animation(screen)
+                for dice in dices:
+                    dice.start_roll(dices)
+                roll.hide()
+                reroll.show()
+                roll_count += 1
         elif reroll.is_clicked(event.pos):
-            cup_animation(screen)
-            for dice in dices:
-                dice.reroll(dices)
-
+            if roll_count < max_rolls:
+                cup_animation(screen)
+                for dice in dices:
+                    dice.reroll(dices)
+                roll_count += 1
         else:
             for dice in dices:
                 dice.toggle_selected(event.pos)
+    return True, roll_count
 
-            # Kliknięcie w kategorię punktacji
-            if scoreboard.handle_click(event.pos, get_dices(dices)):
-                reroll.hide()
-                roll.show()
-
-    return True
 
 def update_dices(dices):
     for dice in dices:
@@ -99,8 +96,10 @@ def update_dices(dices):
 
 background = pygame.image.load("img/dice_background.png")
 background = pygame.transform.scale(background, (1200, 800))
-
-def draw_game(screen, dices, roll, reroll, scoreboard):
+def draw_turn_info(screen, current_turn, max_turns, font):
+    text = font.render(f"Runda: {current_turn} / {max_turns}", True, (255, 255, 255))
+    screen.blit(text, (50, 10))
+def draw_game(screen, dices, roll, reroll, scoreboard, current_turn, max_turns, font):
     screen.fill(BLACK)
     screen.blit(background, (600, 0))
     scoreboard.draw(screen)
@@ -112,8 +111,10 @@ def draw_game(screen, dices, roll, reroll, scoreboard):
     roll.draw(screen)
     reroll.draw(screen)
     pygame.display.flip()
+    draw_turn_info(screen, current_turn, max_turns, font)
 
 def main():
+
     clock = pygame.time.Clock()
     dices = Dice.add_dice()
     roll = Button(WIDTH // 2 - 100, HEIGHT - 120, 140, 50, "Rzuć kostką")
@@ -121,19 +122,41 @@ def main():
     roll.show()
     reroll.hide()
 
+    current_turn = 1
+    max_turns = 13
+    roll_count = 0
+    max_rolls = 3
     scoreboard = Scoreboard(x=50, y=50)
 
     running = True
     while running:
         for event in pygame.event.get():
-            running = handle_events(event, dices, roll, reroll, scoreboard)
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if scoreboard.handle_click(event.pos, get_dices(dices)):
+                    current_turn += 1
+                    roll_count = 0
+                    roll.show()
+                    reroll.hide()
+                    for dice in dices:
+                        dice.reset()
 
-        if all(not dice.is_rolling for dice in dices) and reroll.visible:
+                    if current_turn > max_turns:
+                        print("Koniec gry!")
+                        total = sum(score for score in scoreboard.values.values() if score)
+                        print(f"Twój wynik: {total}")
+                        running = False
+                else:
+                    running, roll_count = handle_events(event, dices, roll, reroll, roll_count, max_rolls)
+
+        if roll.visible and roll_count >= max_rolls:
+            roll.hide()
             reroll.show()
 
         update_dices(dices)
-        draw_game(screen, dices, roll, reroll, scoreboard)
-        clock.tick(200)
+        draw_game(screen, dices, roll, reroll, scoreboard, current_turn, max_turns, font)
+        clock.tick(60)
 
     pygame.quit()
     exit()

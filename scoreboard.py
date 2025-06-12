@@ -71,3 +71,6 @@ class Scoreboard:
             return Chance().score(dice_values)
         else:
             return 0
+
+    def total_score(self):
+        return sum(value for value in self.values.values() if value is not None)
