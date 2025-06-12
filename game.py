@@ -12,9 +12,16 @@ pygame.display.set_caption("Yahtzee")
 music = pygame.mixer.Sound('sound/muza.mp3')
 music.set_volume(0.0)
 music.play()
+
 font = pygame.font.Font(None, 36)
-def draw_cup(screen):
+def draw_empty_cup(screen):
     cup_image = pygame.image.load("img/kubek_animacja/6.png")
+    cup_image = pygame.transform.scale(cup_image, (400, 400))
+    cup_x = WIDTH - 300
+    cup_y = HEIGHT - 350
+    screen.blit(cup_image, (cup_x, cup_y))
+def draw_full_cup(screen):
+    cup_image = pygame.image.load("img/kubek_animacja/1.png")
     cup_image = pygame.transform.scale(cup_image, (400, 400))
     cup_x = WIDTH - 300
     cup_y = HEIGHT - 350
@@ -66,9 +73,9 @@ def cup_animation(screen):
             screen.blit(images[current_frame], (cup_x, cup_y))
 
         pygame.display.flip()
-        clock.tick(120)
+        clock.tick(30)
 
-    draw_cup(screen)
+    draw_empty_cup(screen)
     cup_sound.stop()
 
 def get_dices(dices):
@@ -77,12 +84,12 @@ def get_dices(dices):
 
 def handle_events(event, dices, roll, reroll, roll_count, max_rolls):
     if event.type == pygame.QUIT:
-        return False, roll_count
+        return False
     elif event.type == pygame.MOUSEBUTTONDOWN:
         if roll_count >= max_rolls:
             for dice in dices:
                 dice.toggle_selected(event.pos)
-            return True, roll_count
+            return True
 
         if roll.is_clicked(event.pos):
             cup_animation(screen)
@@ -90,16 +97,18 @@ def handle_events(event, dices, roll, reroll, roll_count, max_rolls):
                 dice.start_roll(dices)
             roll.hide()
             reroll.show()
-            roll_count += 1
+            return "roll"  # Zwróć informację o rzucie
+            
         elif reroll.is_clicked(event.pos):
             cup_animation(screen)
             for dice in dices:
                 dice.reroll(dices)
-            roll_count += 1
+            return "reroll"  # Zwróć informację o powtórnym rzucie
+            
         else:
             for dice in dices:
                 dice.toggle_selected(event.pos)
-    return True, roll_count
+    return True
 
 
 def update_dices(dices):
@@ -117,14 +126,19 @@ def draw_game(screen, dices, roll, reroll, scoreboard, current_turn, max_turns, 
     screen.fill(BLACK)
     screen.blit(background, (600, 0))
     scoreboard.draw(screen)
-    draw_cup(screen)
+    
 
     for dice in dices:
         dice.draw(screen)
 
     roll.draw(screen)
     reroll.draw(screen)
-
+    
+    if roll_count == 0:
+        draw_full_cup(screen)
+    else:
+        draw_empty_cup(screen)
+        
     draw_turn_info(screen, current_turn, max_turns, roll_count, max_rolls, font)
 
     pygame.display.flip()
@@ -160,11 +174,17 @@ def main():
                     reroll.hide()
                     for dice in dices:
                         dice.reset()
-
+                    
                     if current_turn > max_turns:
                         game_over = True
                 else:
-                    running, roll_count = handle_events(event, dices, roll, reroll, roll_count, max_rolls)
+                    event_result = handle_events(event, dices, roll, reroll, roll_count, max_rolls)
+                    if event_result == "roll":
+                        roll_count += 1
+                    elif event_result == "reroll":
+                        roll_count += 1
+                    elif event_result == False:
+                        running = False
 
         if not game_over:
             if roll.visible and roll_count >= max_rolls:

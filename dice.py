@@ -9,9 +9,9 @@ class Dice:
         self.is_rolling = False
         self.current_frame = 1
         self.current_dice = 1
-        self.animation_speed = 3
+        self.animation_speed = 2
         self.frame_counter = 0
-        self.start_pos = (WIDTH - 100, HEIGHT - 100)
+        self.start_pos = (WIDTH - 170, HEIGHT - 240)
         self.current_pos = self.start_pos
         self.end_pos = (final_x, final_y)
         self.animation_progress = 0
@@ -107,7 +107,7 @@ class Dice:
                 else:
                     return Dice.random_position(dices,attempts)
         
-        print(f"proby:{attempts} ")
+        
         return final_x, final_y 
     
     def get_value(self):
