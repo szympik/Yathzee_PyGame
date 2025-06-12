@@ -2,7 +2,9 @@ import pygame
 import random
 import os
 import sys
-from collections import Counter
+from collections import Counter 
+from score_category import ScoreCategory
+from score_category import Ones, Twos, Threes, Fours, Fives, Sixes, ThreeOfAKind, FourOfAKind, FullHouse, SmallStraight, LargeStraight, Yahtzee
 # Globalne stałe
 WIDTH, HEIGHT = 1600, 1000
 

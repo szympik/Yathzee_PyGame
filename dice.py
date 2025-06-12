@@ -33,7 +33,7 @@ class Dice:
         if not self.is_rolling:
 
             self.is_rolling = True
-            self.end_pos = Dice.random_position_start(Dices)
+            self.end_pos = Dice.random_position(Dices)
             self.current_frame = 1
             self.current_dice = random.randint(1, 6)
             self.frame_counter = 0
@@ -44,7 +44,7 @@ class Dice:
 
     def reroll(self,Dices):
         if not self.is_rolling and not self.selected:
-            self.end_pos = Dice.random_position_start(Dices)
+            self.end_pos = Dice.random_position(Dices)
             self.is_rolling = True
             self.current_frame = 1
             self.current_dice = random.randint(1, 6)
@@ -84,7 +84,7 @@ class Dice:
     def add_dice():
         dices = []
         for _ in range(5):
-            final_x, final_y = Dice.random_position_start(dices)
+            final_x, final_y = Dice.random_position(dices)
             dice = Dice(final_x, final_y)
             dices.append(dice)
         return dices
@@ -92,10 +92,24 @@ class Dice:
     
     
     @staticmethod
-    def random_position_start(dices):
-        final_x = random.randint(1100, WIDTH - 200)
-        final_y = random.randint(300, HEIGHT - 200)
+    def random_position(dices,attempts=0):
+        
+        final_x = random.randint(1000, WIDTH - 100)
+        final_y = random.randint(100, HEIGHT - 100)
         for dice in dices:
             if final_x in range(dice.end_pos[0]-128 , dice.end_pos[0] + 128) and final_y in range(dice.end_pos[1]-128 , dice.end_pos[1] + 128):
-                return Dice.random_position_start(dices)
-        return final_x, final_y
+                attempts+=1
+                if attempts > 100:
+                    print("Nie można znaleźć idealnej pozycji, zwracam bezpieczną")
+                    return final_x, final_y
+                else:
+                    return Dice.random_position(dices,attempts)
+        
+       
+        return final_x, final_y 
+    
+    def get_value(self):
+        
+            return self.current_dice
+    
+    

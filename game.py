@@ -1,7 +1,8 @@
 from _import import *
 from dice import Dice
 from button import Button
-# Inicjalizacja pygame
+
+
 pygame.init()
 
 # Ustawienia okna
@@ -9,28 +10,58 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Yahtzee")
 music = pygame.mixer.Sound('sound/muza.mp3')
-music.set_volume(0.1)  # Ustaw głośność dźwięku
+music.set_volume(0.0)  # Ustaw głośność dźwięku
 music.play()
 
-# Font
+def cup_animation(screen):
+        
+        farame = 1
+        total_frames = 6
+        for frame in range(1, total_frames + 1):
+            img_path = f"img/kubek_animacja/{frame}.png"
+            if os.path.exists(img_path):
+                img = pygame.image.load(img_path)
+                
+                    
 font = pygame.font.Font(None, 36)
 
+def score_test(dices):
+    print("Threeofakind" if ThreeOfAKind().check(get_dices(dices)) else "False")
+    print("Fourofakind" if FourOfAKind().check(get_dices(dices)) else "False")
+    print("FullHouse" if FullHouse().check(get_dices(dices)) else "False")
+    print("SmallStraight" if SmallStraight().check(get_dices(dices)) else "False")
+    print("LargeStraight" if LargeStraight().check(get_dices(dices)) else "False")
+    print("Yahtzee" if Yahtzee().check(get_dices(dices)) else "False")
+    print("Ones:", Ones().score(get_dices(dices)))
+    print("Twos:", Twos().score(get_dices(dices)))
+    print("Threes:", Threes().score(get_dices(dices)))
+    print("Fours:", Fours().score(get_dices(dices)))
+    print("Fives:", Fives().score(get_dices(dices)))
+    print("Sixes:", Sixes().score(get_dices(dices)))
+    print("/n-----------------------------------/n")
 
-
-
+def get_dices(dices):
+    return [dice.get_value() for dice in dices]
 
 def handle_events(event, dices, roll, reroll):
+
     if event.type == pygame.QUIT:
         return False
     elif event.type == pygame.MOUSEBUTTONDOWN:
         if roll.is_clicked(event.pos):
+            cup_animation(screen)
             for dice in dices:
                 dice.start_roll(dices)
             roll.hide()
             reroll.show()
+            
         elif reroll.is_clicked(event.pos):
+            cup_animation(screen)
             for dice in dices:
                 dice.reroll(dices)
+            #score_test(dices)
+            
+            
         else:
             for dice in dices:
                 dice.toggle_selected(event.pos)
@@ -49,9 +80,12 @@ def draw_game(screen, dices, roll, reroll):
     y_offset = 10
     for i, dice in enumerate(dices):
         if not dice.is_rolling:
-            result_text = font.render(f"Kostka {i+1}: {dice.current_dice}", True, WHITE)
-            screen.blit(result_text, (10, y_offset))
+             # Pobierz wartości wszystkich kostek
+            
+            
             y_offset += 30
+   
+   
     pygame.display.flip()
 
 def main():
