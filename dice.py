@@ -19,6 +19,7 @@ class Dice:
         self.rect = pygame.Rect(final_x, final_y, 100, 100)
         self.dice_sound = pygame.mixer.Sound("sound/dice_roll.mp3")
         self.dice_sound.set_volume(0.1)
+        self.previous_pos = self.start_pos
 
     def load_images(self):
         for dice_num in range(1, 7):
@@ -37,7 +38,7 @@ class Dice:
             self.current_frame = 1
             self.current_dice = random.randint(1, 6)
             self.frame_counter = 0
-            self.start_pos = self.current_pos
+            self.current_pos = self.start_pos
            
             self.animation_progress = 0
             self.dice_sound.play()
@@ -50,6 +51,7 @@ class Dice:
             self.current_dice = random.randint(1, 6)
             self.frame_counter = 0
             self.animation_progress = 0
+            self.current_pos = self.start_pos
             self.dice_sound.play()
 
     def update(self):
@@ -94,8 +96,8 @@ class Dice:
     @staticmethod
     def random_position(dices,attempts=0):
         
-        final_x = random.randint(1000, WIDTH - 100)
-        final_y = random.randint(100, HEIGHT - 100)
+        final_x = random.randint(750, 1550)  
+        final_y = random.randint(150, 550)
         for dice in dices:
             if final_x in range(dice.end_pos[0]-128 , dice.end_pos[0] + 128) and final_y in range(dice.end_pos[1]-128 , dice.end_pos[1] + 128):
                 attempts+=1
@@ -105,7 +107,7 @@ class Dice:
                 else:
                     return Dice.random_position(dices,attempts)
         
-       
+        print(f"proby:{attempts} ")
         return final_x, final_y 
     
     def get_value(self):

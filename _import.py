@@ -6,7 +6,7 @@ from collections import Counter
 from score_category import ScoreCategory
 from score_category import Ones, Twos, Threes, Fours, Fives, Sixes, ThreeOfAKind, FourOfAKind, FullHouse, SmallStraight, LargeStraight, Yahtzee
 # Globalne stałe
-WIDTH, HEIGHT = 1600, 1000
+WIDTH, HEIGHT = 1800, 1000
 
 # Kolory
 WHITE = (255, 255, 255)
