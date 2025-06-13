@@ -46,13 +46,15 @@ class Dice:
     def reroll(self,Dices):
         if not self.is_rolling and not self.selected:
             self.end_pos = Dice.random_position(Dices)
+            self.current_pos = self.start_pos
             self.is_rolling = True
             self.current_frame = 1
             self.current_dice = random.randint(1, 6)
             self.frame_counter = 0
             self.animation_progress = 0
-            self.current_pos = self.start_pos
+            
             self.dice_sound.play()
+            
 
     def update(self):
         if self.is_rolling:
@@ -114,4 +116,16 @@ class Dice:
         
             return self.current_dice
     
-    
+    def reset(self):
+        self.is_rolling = False
+        self.current_frame = 1
+        self.current_dice = 1
+        self.frame_counter = 0
+        self.current_pos = self.start_pos
+        self.end_pos = (self.start_pos[0], self.start_pos[1])
+        self.animation_progress = 0
+        self.selected = False
+        self.rect.topleft = (self.start_pos[0], self.start_pos[1])
+        
+   
+        

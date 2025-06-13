@@ -40,6 +40,8 @@ class Scoreboard:
         for rect, category in zip(self.rects, self.categories):
             if rect.collidepoint(pos) and self.values[category] is None:
                 self.values[category] = self.calculate_score(category, dice_values)
+                return True
+        return False
 
     def calculate_score(self, category, dice_values):
         if category == "Ones":

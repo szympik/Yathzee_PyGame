@@ -13,7 +13,7 @@ music.set_volume(0.0)
 music.play()
 
 font = pygame.font.Font(None, 36)
-
+    
 def main():
     clock = pygame.time.Clock()
     scoreboard = Scoreboard(x=50, y=50)
@@ -29,7 +29,7 @@ def main():
                 if game_round.roll_count > 0 and scoreboard.handle_click(event.pos, game_round.get_dices()):
                     game_round.next_turn()
                 else:
-                    event_result = game_round.handle_events(event)
+                    event_result = game_round.handle_events(event,scoreboard)
                     if event_result == "roll":
                         game_round.increase_roll_count()
                     elif event_result == "reroll":

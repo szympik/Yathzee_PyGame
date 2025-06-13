@@ -3,4 +3,4 @@ class Player():
         self.name = name
         self.rounds_played = 0
         self.total_score = 0
-    
+        

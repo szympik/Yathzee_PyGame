@@ -42,6 +42,8 @@ class Round:
         pygame.display.flip()
 
     def cup_animation(self):
+        
+      
         total_frames = 6
         images = {}
 
@@ -57,13 +59,14 @@ class Round:
         current_frame = 1
         frame_counter = 0
         animation_speed = 2
-
+        
         cup_sound = pygame.mixer.Sound("sound/shaking_dice.mp3")
         cup_sound.set_volume(0.1)
         cup_sound.play()
 
         clock = pygame.time.Clock()
-
+        
+        
         while current_frame <= total_frames:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -87,7 +90,7 @@ class Round:
     def get_dices(self):
         return [dice.get_value() for dice in self.dices]
 
-    def handle_events(self, event):
+    def handle_events(self, event,scoreboard):
         if event.type == pygame.QUIT:
             return False
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -105,6 +108,7 @@ class Round:
                 return "roll"  # Zwróć informację o rzucie
                 
             elif self.reroll.is_clicked(event.pos):
+                self.hide_dices(scoreboard)
                 self.cup_animation()
                 for dice in self.dices:
                     dice.reroll(self.dices)
@@ -164,3 +168,19 @@ class Round:
         if self.roll.visible and self.roll_count >= self.max_rolls:
             self.roll.hide()
             self.reroll.show()
+
+
+    def reset(self):
+        self.roll_count = 0
+        for dice in self.dices:
+            dice.reset()
+        self.roll.show()
+        self.reroll.hide()
+        self.draw_full_cup()
+
+    def hide_dices(self,scoreboard):
+        for dice in self.dices:
+            if dice.selected==False:
+                dice.current_pos = (-100, -100)
+        self.draw_game(scoreboard)
+        pygame.display.flip()
