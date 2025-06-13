@@ -10,11 +10,11 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Yahtzee")
 
 music = pygame.mixer.Sound('sound/jazz.mp3')
-music.set_volume(1.0)
+music.set_volume(0.0)
 music.play()
 
-font = pygame.font.Font(None, 36)
-timer_font = pygame.font.Font(None, 30)
+font = pygame.font.Font("fonts/font.ttf", 36)
+timer_font = pygame.font.Font("fonts/font.ttf", 30)
 def main_menu():
     num_players = 1
     min_players = 1
@@ -59,7 +59,7 @@ def main_menu():
 
     return num_players
 def choose_difficulty():
-    font = pygame.font.Font(None, 40)
+    font = pygame.font.Font("fonts/font.ttf", 40)
     easy_btn = Button(WIDTH // 2 - 100, 250, 200, 60, "Łatwy")
     medium_btn = Button(WIDTH // 2 - 100, 350, 200, 60, "Średni")
     hard_btn = Button(WIDTH // 2 - 100, 450, 200, 60, "Trudny")
@@ -86,9 +86,9 @@ def choose_difficulty():
                 if easy_btn.is_clicked(event.pos):
                     return None  # brak limitu
                 elif medium_btn.is_clicked(event.pos):
-                    return 20  # 20 sekund
+                    return 40  # 40 sekund
                 elif hard_btn.is_clicked(event.pos):
-                    return 10  # 10 sekund
+                    return 20  # 20 sekund
        
 def add_players(num_players):
     players = []
@@ -110,7 +110,7 @@ def main():
     current_player_index = 0
     running = True
     turn_start_time = pygame.time.get_ticks()  # start tury
-    timer_font = pygame.font.Font(None, 30)
+    timer_font = pygame.font.Font("fonts/font.ttf", 30)
 
     while running:
         current_player = players[current_player_index]

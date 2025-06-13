@@ -14,7 +14,7 @@ class Round:
         self.reroll = Button(WIDTH // 2 - 100, HEIGHT - 120, 140, 50, "Ponownie")
         self.roll.show()
         self.reroll.hide()
-        self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font("fonts/font.ttf", 36)
         self.game_over = False
         self.background = pygame.image.load("img/dice_background.png")
         self.background = pygame.transform.scale(self.background, (1200, 800))

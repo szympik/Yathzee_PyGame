@@ -8,7 +8,7 @@ BLACK = (0, 0, 0)
 TRANSPARENT = (0, 0, 0, 0)
 class Scoreboard:
     def __init__(self, x=50, y=50):
-        self.font = pygame.font.Font("fonts/font.ttf", 32)
+        self.font = pygame.font.Font("fonts/fancy.ttf", 32)
         self.x, self.y = x, y
         self.width, self.height = 500, 950
         self.categories = [
