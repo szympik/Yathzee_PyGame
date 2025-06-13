@@ -127,23 +127,27 @@ class Round:
         text = self.font.render(f"Runda: {self.current_turn} / {self.max_turns}   Rzuty: {self.roll_count} / {self.max_rolls}", True, (255, 255, 255))
         self.screen.blit(text, (50, 10))
 
-    def draw_game(self, scoreboard):
+    def draw_game(self, scoreboard, player_name=""):
         self.screen.fill(BLACK)
         self.screen.blit(self.background, (600, 0))
         scoreboard.draw(self.screen)
-        
+
         for dice in self.dices:
             dice.draw(self.screen)
 
         self.roll.draw(self.screen)
         self.reroll.draw(self.screen)
-        
+
         if self.roll_count == 0:
             self.draw_full_cup()
         else:
             self.draw_empty_cup()
-            
+
         self.draw_turn_info()
+
+        if player_name:
+            name_text = self.font.render(f"Tura gracza: {player_name}", True, (255,255,255))
+            self.screen.blit(name_text, (370, 10))
 
         pygame.display.flip()
 
