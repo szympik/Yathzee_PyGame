@@ -3,7 +3,7 @@ from dice import Dice
 from button import Button
 
 class Round:
-    def __init__(self, screen, current_turn=1, max_turns=3, max_rolls=3):
+    def __init__(self, screen, current_turn=1, max_turns=1, max_rolls=3):
         self.screen = screen
         self.current_turn = current_turn
         self.max_turns = max_turns
@@ -18,7 +18,8 @@ class Round:
         self.game_over = False
         self.background = pygame.image.load("img/dice_background.png")
         self.background = pygame.transform.scale(self.background, (1200, 800))
-
+        self.game_over_image = pygame.image.load("img/game_over.png")
+        self.game_over_image = pygame.transform.scale(self.game_over_image, (300, 100))
     def draw_empty_cup(self):
         cup_image = pygame.image.load("img/kubek_animacja/6.png")
         cup_image = pygame.transform.scale(cup_image, (400, 400))
@@ -33,12 +34,46 @@ class Round:
         cup_y = HEIGHT - 350
         self.screen.blit(cup_image, (cup_x, cup_y))
 
-    def draw_game_over(self, total_score):
+    def draw_game_over(self, total_scores):
         self.screen.fill(BLACK)
-        text1 = self.font.render("Koniec gry!", True, (255, 255, 255))
-        text2 = self.font.render(f"Twój wynik: {total_score}", True, (255, 255, 255))
-        self.screen.blit(text1, (WIDTH // 2 - text1.get_width() // 2, HEIGHT // 2 - 40))
-        self.screen.blit(text2, (WIDTH // 2 - text2.get_width() // 2, HEIGHT // 2 + 10))
+        title_text = self.font.render("Koniec gry!", True, (255, 255, 255))
+        self.screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 50))
+        image_rect = self.game_over_image.get_rect(center=(WIDTH // 2, 80))
+        self.screen.blit(self.game_over_image, image_rect)
+        # Sortowanie wyników malejąco po wyniku
+        sorted_scores = sorted(total_scores, key=lambda x: x[1], reverse=True)
+
+        medal_colors = [
+            (255, 215, 0),  # złoto
+            (192, 192, 192),  # srebro
+            (205, 127, 50)  # brąz
+        ]
+        white = (255, 255, 255)
+
+        start_y = 150
+        line_height = 40
+
+        last_score = None
+        last_rank = 0
+
+        for i, (player_name, score) in enumerate(sorted_scores, start=1):
+            if score == last_score:
+                rank = last_rank  # ten sam ranking co poprzedni gracz
+            else:
+                rank = i  # nowe miejsce
+
+            last_score = score
+            last_rank = rank
+
+            # kolor medalu tylko dla miejsc 1-3 (tie rank)
+            if rank <= 3:
+                color = medal_colors[rank - 1]
+            else:
+                color = white
+
+            text = self.font.render(f"{rank}. {player_name}: {score}", True, color)
+            self.screen.blit(text, (WIDTH // 2 - text.get_width() // 2, start_y + (i - 1) * line_height))
+
         pygame.display.flip()
 
     def cup_animation(self):
