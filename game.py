@@ -158,7 +158,14 @@ def main():
 
                 # Rysuj timer, jeśli jest limit czasu
                 if time_left is not None:
-                    timer_text = timer_font.render(f"Pozostały czas: {time_left} s", True, (255, 0, 0))
+                    if time_left < 5:
+                        color = (255, 0, 0)  #  czerwony
+                    elif time_left < 10:
+                        color = (255, 255, 0)  #  żółty
+                    else:
+                        color = (255, 255, 255)  #  biały
+
+                    timer_text = timer_font.render(f"Pozostały czas: {time_left} s", True, color)
                     screen.blit(timer_text, (WIDTH - timer_text.get_width() - 20, 20))
             else:
                 current_player_index = (current_player_index + 1) % len(players)
