@@ -42,7 +42,8 @@ class Player():
                         color = color_inactive
                     # Obsługa przycisku "Potwierdź"
                     if confirm_btn.is_clicked(event.pos):
-                        done = True
+                        if text:
+                            done = True
                 elif event.type == pygame.KEYDOWN and active:
                     if event.key == pygame.K_RETURN:
                         done = True

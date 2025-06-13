@@ -143,11 +143,14 @@ class Round:
                 return "roll"  # Zwróć informację o rzucie
                 
             elif self.reroll.is_clicked(event.pos):
-                self.hide_dices(scoreboard)
-                self.cup_animation()
-                for dice in self.dices:
-                    dice.reroll(self.dices)
-                return "reroll"  # Zwróć informację o powtórnym rzucie
+                if self.all_dices_selected():
+                    pass
+                else:
+                    self.hide_dices(scoreboard)
+                    self.cup_animation()
+                    for dice in self.dices:
+                        dice.reroll(self.dices)
+                    return "reroll"  # Zwróć informację o powtórnym rzucie
                 
             else:
                 for dice in self.dices:
@@ -223,3 +226,9 @@ class Round:
                 dice.current_pos = (-100, -100)
         self.draw_game(scoreboard)
         pygame.display.flip()
+
+    def all_dices_selected(self):
+            for dice in self.dices:
+                if not dice.selected:
+                    return False
+            return True
