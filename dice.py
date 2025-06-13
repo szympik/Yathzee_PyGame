@@ -127,5 +127,6 @@ class Dice:
         self.selected = False
         self.rect.topleft = (self.start_pos[0], self.start_pos[1])
         
+        
    
         
