@@ -16,7 +16,7 @@ music.play()
 font = pygame.font.Font(None, 36)
 
 def main_menu():
-    num_players = 2
+    num_players = 1
     min_players = 1
     max_players = 6
     menu_running = True
