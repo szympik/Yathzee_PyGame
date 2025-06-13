@@ -9,7 +9,7 @@ class Dice:
         self.is_rolling = False
         self.current_frame = 1
         self.current_dice = 1
-        self.animation_speed = 2
+        self.animation_speed = 1
         self.frame_counter = 0
         self.start_pos = (WIDTH - 170, HEIGHT - 240)
         self.current_pos = self.start_pos

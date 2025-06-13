@@ -2,39 +2,56 @@ import pygame
 from score_category import *
 
 WHITE = (255, 255, 255)
-GRAY = (200, 200, 200)
+GOLD = (183, 147, 60)
+YELLOW = (212, 175, 55) 
 BLACK = (0, 0, 0)
-
+TRANSPARENT = (0, 0, 0, 0)
 class Scoreboard:
     def __init__(self, x=50, y=50):
-        self.font = pygame.font.Font(None, 32)
+        self.font = pygame.font.Font("fonts/font.ttf", 32)
         self.x, self.y = x, y
-        self.width, self.height = 250, 40
+        self.width, self.height = 500, 950
         self.categories = [
             "Ones", "Twos", "Threes", "Fours", "Fives", "Sixes",
             "Three of a Kind", "Four of a Kind", "Full House",
             "Small Straight", "Large Straight", "Yahtzee", "Chance"
         ]
-        self.rects = []
+        self.rects = self.get_rect()
         self.values = {category: None for category in self.categories}
+        self.img = pygame.image.load("img/scoreboard.png")
 
+        
+    def get_rect(self):
+        pom = 0
+        rects = []
         for i, _ in enumerate(self.categories):
-            rect = pygame.Rect(x, y + i * self.height, self.width, self.height)
-            self.rects.append(rect)
-
+            if i < 6:
+                rect = pygame.Rect(
+                    self.x + 120, self.y + 125 + pom, 265, 45)
+                pom += 55
+            else:
+                rect = pygame.Rect(
+                    self.x + 120, self.y + 125 + pom, 265, 45)
+                pom += 57
+            rects.append(rect)
+        return rects
+    
     def draw(self, screen):
+        self.img = pygame.transform.scale(self.img, (self.width, self.height ))
+        screen.blit(self.img, (self.x, self.y))
+        #pygame.draw.rect(screen,WHITE,(self.x+120, self.y+125, 265, 45), 1)
         for i, category in enumerate(self.categories):
             rect = self.rects[i]
-            pygame.draw.rect(screen, GRAY, rect)
-            pygame.draw.rect(screen, WHITE, rect, 2)
+            
+            pygame.draw.rect(screen, TRANSPARENT, rect, 1)
 
-            text = self.font.render(category, True, BLACK)
-            screen.blit(text, (rect.x + 5, rect.y + 5))
+            text = self.font.render(category, True, GOLD)
+            screen.blit(text, (rect.x + 3, rect.y + 3))
 
             value = self.values[category]
             if value is not None:
-                val_text = self.font.render(str(value), True, BLACK)
-                screen.blit(val_text, (rect.right - 40, rect.y + 5))
+                val_text = self.font.render(str(value), True, YELLOW)
+                screen.blit(val_text, (rect.right - 40, rect.y ))
 
     def handle_click(self, pos, dice_values):
         for rect, category in zip(self.rects, self.categories):
