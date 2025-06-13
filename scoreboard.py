@@ -6,7 +6,7 @@ GRAY = (200, 200, 200)
 BLACK = (0, 0, 0)
 
 class Scoreboard:
-    def __init__(self, x, y):
+    def __init__(self, x=50, y=50):
         self.font = pygame.font.Font(None, 32)
         self.x, self.y = x, y
         self.width, self.height = 250, 40
