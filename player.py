@@ -23,8 +23,8 @@ class Player():
         text = ""
         done = False
 
-        # Dodaj przycisk "Potwierdź"
-        confirm_btn = Button(WIDTH // 2 - 75, HEIGHT // 2 + 75, 150, 40, "Potwierdź")
+        # Jeszcze większy przycisk "Potwierdź"
+        confirm_btn = Button(WIDTH // 2 - 120, HEIGHT // 2 + 70, 240, 65, "Potwierdź")
         confirm_btn.show()
 
         while not done:
@@ -62,4 +62,3 @@ class Player():
             confirm_btn.draw(screen)
             pygame.display.flip()
         self.name = text
-            

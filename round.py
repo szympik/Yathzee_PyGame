@@ -10,8 +10,8 @@ class Round:
         self.roll_count = 0
         self.max_rolls = max_rolls
         self.dices = Dice.add_dice()
-        self.roll = Button(WIDTH // 2 - 100, HEIGHT - 120, 140, 50, "Rzuć kostką")
-        self.reroll = Button(WIDTH // 2 - 100, HEIGHT - 120, 140, 50, "Ponownie")
+        self.roll = Button(WIDTH // 2 - 150, HEIGHT - 160, 240, 90, "Rzuć kostką")
+        self.reroll = Button(WIDTH // 2 - 150, HEIGHT - 160, 240, 90, "Ponownie")
         self.roll.show()
         self.reroll.hide()
         self.font = pygame.font.Font("fonts/font.ttf", 36)
@@ -93,7 +93,7 @@ class Round:
 
         current_frame = 1
         frame_counter = 0
-        animation_speed = 2
+        animation_speed = 3
         
         cup_sound = pygame.mixer.Sound("sound/shaking_dice.mp3")
         cup_sound.set_volume(0.1)

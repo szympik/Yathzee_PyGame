@@ -1,11 +1,7 @@
 import pygame
-from score_category import *
+from _import import *
 
-WHITE = (255, 255, 255)
-GOLD = (183, 147, 60)
-YELLOW = (212, 175, 55) 
-BLACK = (0, 0, 0)
-TRANSPARENT = (0, 0, 0, 0)
+
 class Scoreboard:
     def __init__(self, x=50, y=50):
         self.font = pygame.font.Font("fonts/fancy.ttf", 32)

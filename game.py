@@ -22,9 +22,9 @@ def main_menu():
     menu_running = True
 
     # Przyciski strzałek
-    left_btn = Button(WIDTH // 2 - 250, HEIGHT // 2 - 25, 60, 50, "<")
-    right_btn = Button(WIDTH // 2 + 190, HEIGHT // 2 - 25, 60, 50, ">")
-    start_btn = Button(WIDTH // 2 - 50, HEIGHT // 2 + 80, 100, 50, "START")
+    left_btn = Button(WIDTH // 2 - 250, HEIGHT // 2 - 25, 60, 40, "", "img/left_arrow.png")
+    right_btn = Button(WIDTH // 2 + 190, HEIGHT // 2 - 25, 60, 40, "", "img/right_arrow.png")
+    start_btn = Button(WIDTH // 2 - 100, HEIGHT // 2 + 65, 200, 70, "Start")
     left_btn.show()
     right_btn.show()
     start_btn.show()
@@ -60,9 +60,10 @@ def main_menu():
     return num_players
 def choose_difficulty():
     font = pygame.font.Font("fonts/font.ttf", 40)
-    easy_btn = Button(WIDTH // 2 - 100, 250, 200, 60, "Łatwy")
-    medium_btn = Button(WIDTH // 2 - 100, 350, 200, 60, "Średni")
-    hard_btn = Button(WIDTH // 2 - 100, 450, 200, 60, "Trudny")
+    # Jeszcze większe przyciski poziomów
+    easy_btn = Button(WIDTH // 2 - 140, 230, 280, 85, "Łatwy")
+    medium_btn = Button(WIDTH // 2 - 140, 340, 280, 85, "Średni")
+    hard_btn = Button(WIDTH // 2 - 140, 450, 280, 85, "Trudny")
 
     easy_btn.show()
     medium_btn.show()
