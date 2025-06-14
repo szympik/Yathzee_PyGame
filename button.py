@@ -4,7 +4,7 @@ class Button:
     def __init__(self, x, y, width, height, text,image_path="img/button.png"):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
-        self.font = pygame.font.Font("fonts/font.ttf", 36)
+        self.font = pygame.font.Font("fonts/font_bold.ttf", 36)
         self.image = pygame.image.load(image_path)
         self.visible = False
 

@@ -140,7 +140,7 @@ def main():
                     game_round.next_turn()
                     turn_start_time = pygame.time.get_ticks()  # reset timera
                 else:
-                    event_result = game_round.handle_events(event, scoreboard)
+                    event_result = game_round.handle_events(event, scoreboard, current_player.name, time_limit)
                     if event_result in ("roll", "reroll"):
                         game_round.increase_roll_count()
                     elif event_result == False:
@@ -155,7 +155,7 @@ def main():
             if not game_round.is_game_over():
                 game_round.update_roll_buttons()
                 game_round.update_dices()
-                game_round.draw_game(scoreboard, current_player.name)
+                game_round.draw_game(scoreboard, current_player.name,time_limit)
 
                 # Rysuj timer, jeśli jest limit czasu
                 if time_left is not None:

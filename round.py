@@ -3,7 +3,7 @@ from dice import Dice
 from button import Button
 
 class Round:
-    def __init__(self, screen, current_turn=1, max_turns=2, max_rolls=3):
+    def __init__(self, screen, current_turn=1, max_turns=5, max_rolls=3):
         self.screen = screen
         self.current_turn = current_turn
         self.max_turns = max_turns
@@ -125,7 +125,7 @@ class Round:
     def get_dices(self):
         return [dice.get_value() for dice in self.dices]
 
-    def handle_events(self, event,scoreboard):
+    def handle_events(self, event,scoreboard, player_name,difficulty):
         if event.type == pygame.QUIT:
             return False
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -146,7 +146,7 @@ class Round:
                 if self.all_dices_selected():
                     pass
                 else:
-                    self.hide_dices(scoreboard)
+                    self.hide_dices(scoreboard, player_name, difficulty)
                     self.cup_animation()
                     for dice in self.dices:
                         dice.reroll(self.dices)
@@ -165,10 +165,10 @@ class Round:
         text = self.font.render(f"Runda: {self.current_turn} / {self.max_turns}   Rzuty: {self.roll_count} / {self.max_rolls}", True, (255, 255, 255))
         self.screen.blit(text, (50, 10))
 
-    def draw_game(self, scoreboard, player_name=""):
+    def draw_game(self, scoreboard, player_name,difficulty):
         self.screen.fill(BLACK)
         self.screen.blit(self.background, (600, 0))
-        scoreboard.draw(self.screen)
+        scoreboard.draw(self.screen,self.get_dices(),difficulty,self.roll_count)
 
         for dice in self.dices:
             dice.draw(self.screen)
@@ -220,11 +220,11 @@ class Round:
         self.reroll.hide()
         self.draw_full_cup()
 
-    def hide_dices(self,scoreboard):
+    def hide_dices(self,scoreboard,player_name,difficulty):
         for dice in self.dices:
             if dice.selected==False:
                 dice.current_pos = (-100, -100)
-        self.draw_game(scoreboard)
+        self.draw_game(scoreboard,player_name,difficulty)
         pygame.display.flip()
 
     def all_dices_selected(self):

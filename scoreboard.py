@@ -4,7 +4,7 @@ from _import import *
 
 class Scoreboard:
     def __init__(self, x=50, y=50):
-        self.font = pygame.font.Font("fonts/fancy.ttf", 32)
+        self.font = pygame.font.Font("fonts/fancy_bold.ttf", 32)
         self.x, self.y = x, y
         self.width, self.height = 500, 950
         self.categories = [
@@ -32,23 +32,34 @@ class Scoreboard:
             rects.append(rect)
         return rects
     
-    def draw(self, screen):
-        self.img = pygame.transform.scale(self.img, (self.width, self.height ))
+    def draw(self, screen, dice_values=None, difficulty=None, roll_count=0):
+        self.img = pygame.transform.scale(self.img, (self.width, self.height))
         screen.blit(self.img, (self.x, self.y))
-        #pygame.draw.rect(screen,WHITE,(self.x+120, self.y+125, 265, 45), 1)
+        highlight = []
+        highlight_scores = {}
+        # Tylko na easy/medium, po rzucie (roll_count > 0) i po rzucie
+        if (difficulty in (None, 40)) and dice_values and roll_count > 0:
+            for i, category in enumerate(self.categories):
+                if self.values[category] is None:
+                    score = self.calculate_score(category, dice_values)
+                    if score > 0:
+                        highlight.append(category)
+                        highlight_scores[category] = score
+
         for i, category in enumerate(self.categories):
             rect = self.rects[i]
-            
             pygame.draw.rect(screen, TRANSPARENT, rect, 1)
-
             text = self.font.render(category, True, GOLD)
             screen.blit(text, (rect.x + 3, rect.y + 3))
-
             value = self.values[category]
-            if value is not None:
+            if category in highlight and value is None:
+                val = highlight_scores[category]
+                val_text = self.font.render(str(val), True, (255, 0, 0))
+                screen.blit(val_text, (rect.right - 40, rect.y))
+            elif value is not None:
                 val_text = self.font.render(str(value), True, YELLOW)
-                screen.blit(val_text, (rect.right - 40, rect.y ))
-
+                screen.blit(val_text, (rect.right - 40, rect.y))
+    
     def handle_click(self, pos, dice_values):
         for rect, category in zip(self.rects, self.categories):
             if rect.collidepoint(pos) and self.values[category] is None:
@@ -88,3 +99,12 @@ class Scoreboard:
 
     def total_score(self):
         return sum(value for value in self.values.values() if value is not None)
+    
+    def possible_categories(self, dice_values):
+        possible = []
+        for category in self.categories:
+            if self.values[category] is None:
+                score = self.calculate_score(category, dice_values)
+                if score > 0:
+                    possible.append(category)
+        return possible
