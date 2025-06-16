@@ -8,7 +8,7 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Yahtzee")
 music = pygame.mixer.Sound('sound/jazz.mp3')
-music.set_volume(0.0)
+music.set_volume(0.2)
 music.play()
 
 font = pygame.font.Font("fonts/font.ttf", 36)
