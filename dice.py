@@ -2,7 +2,7 @@ from _import import *
 
 class Dice:
     def __init__(self, final_x=None, final_y=None):
-       
+        """Inicjalizuje pojedynczą kostkę z animacją i dźwiękiem."""
         self.total_frames = 17
         self.images = {}
         self.load_images()
@@ -22,6 +22,7 @@ class Dice:
         self.previous_pos = self.start_pos
 
     def load_images(self):
+        """Ładuje obrazy animacji dla każdej kostki i klatki animacji."""
         for dice_num in range(1, 7):
             self.images[dice_num] = {}
             for frame in range(1, self.total_frames + 1):
@@ -30,20 +31,20 @@ class Dice:
                     img = pygame.image.load(img_path)
                     self.images[dice_num][frame] = pygame.transform.scale(img, (100, 100))
 
-    def start_roll(self,Dices):
+    def start_roll(self, Dices):
+        """Rozpoczyna animację rzutu kostką."""
         if not self.is_rolling:
-
             self.is_rolling = True
             self.end_pos = Dice.random_position(Dices)
             self.current_frame = 1
             self.current_dice = random.randint(1, 6)
             self.frame_counter = 0
             self.current_pos = self.start_pos
-           
             self.animation_progress = 0
             self.dice_sound.play()
 
-    def reroll(self,Dices):
+    def reroll(self, Dices):
+        """Rozpoczyna animację ponownego rzutu, jeśli kostka nie jest wybrana."""
         if not self.is_rolling and not self.selected:
             self.end_pos = Dice.random_position(Dices)
             self.current_pos = self.start_pos
@@ -52,11 +53,10 @@ class Dice:
             self.current_dice = random.randint(1, 6)
             self.frame_counter = 0
             self.animation_progress = 0
-            
             self.dice_sound.play()
-            
 
     def update(self):
+        """Aktualizuje animację rzutu kostką."""
         if self.is_rolling:
             self.frame_counter += 1
             if self.frame_counter >= self.animation_speed:
@@ -74,18 +74,21 @@ class Dice:
                     self.current_pos = self.end_pos
 
     def draw(self, surface):
+        """Rysuje kostkę na ekranie wraz z animacją i zaznaczeniem."""
         if self.current_dice in self.images and self.current_frame in self.images[self.current_dice]:
             surface.blit(self.images[self.current_dice][self.current_frame], self.current_pos)
             if self.selected:
-                pygame.draw.rect(surface,(226, 172, 0), (self.current_pos[0]+12,self.current_pos[1]+12, 77, 77), 4)
+                pygame.draw.rect(surface, (226, 172, 0), (self.current_pos[0]+12, self.current_pos[1]+12, 77, 77), 4)
 
     def toggle_selected(self, pos):
+        """Zaznacza lub odznacza kostkę po kliknięciu."""
         rect = pygame.Rect(*self.current_pos, 100, 100)
         if rect.collidepoint(pos) and not self.is_rolling:
             self.selected = not self.selected
 
     @staticmethod
     def add_dice():
+        """Tworzy i zwraca listę pięciu nowych kostek."""
         dices = []
         for _ in range(5):
             final_x, final_y = Dice.random_position(dices)
@@ -93,11 +96,9 @@ class Dice:
             dices.append(dice)
         return dices
 
-    
-    
     @staticmethod
-    def random_position(dices,attempts=0):
-        
+    def random_position(dices, attempts=0):
+        """Zwraca losową pozycję dla nowej kostki, unikając kolizji z innymi."""
         final_x = random.randint(750, 1550)  
         final_y = random.randint(150, 550)
         for dice in dices:
@@ -107,16 +108,15 @@ class Dice:
                     print("Nie można znaleźć idealnej pozycji, zwracam bezpieczną")
                     return final_x, final_y
                 else:
-                    return Dice.random_position(dices,attempts)
-        
-        
+                    return Dice.random_position(dices, attempts)
         return final_x, final_y 
-    
+
     def get_value(self):
-        
-            return self.current_dice
-    
+        """Zwraca aktualną wartość kostki."""
+        return self.current_dice
+
     def reset(self):
+        """Resetuje stan kostki do początkowego."""
         self.is_rolling = False
         self.current_frame = 1
         self.current_dice = 1
@@ -126,7 +126,6 @@ class Dice:
         self.animation_progress = 0
         self.selected = False
         self.rect.topleft = (self.start_pos[0], self.start_pos[1])
-        
-        
-   
-        
+
+
+

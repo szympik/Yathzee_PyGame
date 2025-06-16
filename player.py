@@ -2,19 +2,24 @@ from _import import *
 from scoreboard import Scoreboard
 from round import Round
 from button import Button
+
 class Player(): 
-    def __init__(self,scoreboard,round):
+    def __init__(self,scoreboard,round,number):
+        """Inicjalizuje gracza z własnym scoreboardem i rundą."""
         self.name = ""
         self.rounds_played = 0
         self.total_score = 0
         self.scoreboard = scoreboard
         self.round = round
+        self.number = number  
     
     def add_points(self, points):
+        """Dodaje punkty do całkowitego wyniku gracza i aktualizuje scoreboard."""
         self.total_score += points
         self.scoreboard.update_score(self.name, self.total_score)
     
     def name_player(self, screen, font):
+        """Wyświetla okno do wpisania imienia gracza i zapisuje je."""
         input_box = pygame.Rect(WIDTH // 2 - 150, HEIGHT // 2, 300, 50)
         color_inactive = (180, 180, 180)
         color_active = (255, 255, 255)
@@ -33,14 +38,12 @@ class Player():
                     pygame.quit()
                     exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # Aktywuj pole po kliknięciu
                     if input_box.collidepoint(event.pos):
                         active = True
                         color = color_active
                     else:
                         active = False
                         color = color_inactive
-                    # Obsługa przycisku "Potwierdź"
                     if confirm_btn.is_clicked(event.pos):
                         if text:
                             done = True
@@ -50,11 +53,14 @@ class Player():
                     elif event.key == pygame.K_BACKSPACE:
                         text = text[:-1]
                     else:
-                        if len(text) < 15:  # limit znaków
+                        if len(text) < 15:
                             text += event.unicode
 
             screen.fill(DARK_GREEN)
-            prompt = font.render("Podaj nazwe gracza: ", True, GOLD)
+            if self.number == 0:
+                prompt = font.render(f"Podaj nazwe gracza: ", True, GOLD)
+            else:     
+                prompt = font.render(f"Podaj nazwe gracza {self.number+1}: ", True, GOLD)
             screen.blit(prompt, (WIDTH // 2 - prompt.get_width() // 2, HEIGHT // 2 - 80))
             pygame.draw.rect(screen, YELLOW, input_box, 2)
             txt_surface = font.render(text, True, GOLD)

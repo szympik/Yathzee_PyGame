@@ -4,6 +4,7 @@ from _import import *
 
 class Scoreboard:
     def __init__(self, x=50, y=50):
+        """Inicjalizuje scoreboard z pozycją, rozmiarem i kategoriami."""
         self.font = pygame.font.Font("fonts/fancy_bold.ttf", 32)
         self.x, self.y = x, y
         self.width, self.height = 500, 950
@@ -16,8 +17,8 @@ class Scoreboard:
         self.values = {category: None for category in self.categories}
         self.img = pygame.image.load("img/scoreboard.png")
 
-        
     def get_rect(self):
+        """Zwraca listę prostokątów odpowiadających polom punktacji."""
         pom = 0
         rects = []
         for i, _ in enumerate(self.categories):
@@ -31,13 +32,13 @@ class Scoreboard:
                 pom += 57
             rects.append(rect)
         return rects
-    
+
     def draw(self, screen, dice_values=None, difficulty=None, roll_count=0):
+        """Rysuje scoreboard na ekranie wraz z aktualnymi wynikami i podpowiedziami."""
         self.img = pygame.transform.scale(self.img, (self.width, self.height))
         screen.blit(self.img, (self.x, self.y))
         highlight = []
         highlight_scores = {}
-        # Tylko na easy/medium, po rzucie (roll_count > 0) i po rzucie
         if (difficulty in (None, 40)) and dice_values and roll_count > 0:
             for i, category in enumerate(self.categories):
                 if self.values[category] is None:
@@ -59,8 +60,9 @@ class Scoreboard:
             elif value is not None:
                 val_text = self.font.render(str(value), True, YELLOW)
                 screen.blit(val_text, (rect.right - 40, rect.y))
-    
+
     def handle_click(self, pos, dice_values):
+        """Obsługuje kliknięcie w pole punktacji i przypisuje wynik."""
         for rect, category in zip(self.rects, self.categories):
             if rect.collidepoint(pos) and self.values[category] is None:
                 self.values[category] = self.calculate_score(category, dice_values)
@@ -68,6 +70,7 @@ class Scoreboard:
         return False
 
     def calculate_score(self, category, dice_values):
+        """Oblicza wynik dla danej kategorii na podstawie wartości kości."""
         if category == "Ones":
             return Ones().score(dice_values)
         elif category == "Twos":
@@ -98,9 +101,11 @@ class Scoreboard:
             return 0
 
     def total_score(self):
+        """Zwraca sumę wszystkich zdobytych punktów."""
         return sum(value for value in self.values.values() if value is not None)
-    
+
     def possible_categories(self, dice_values):
+        """Zwraca listę możliwych kategorii do wybrania na podstawie aktualnych kości."""
         possible = []
         for category in self.categories:
             if self.values[category] is None:

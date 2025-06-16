@@ -1,3 +1,4 @@
+"""Importy i stałe globalne dla gry Yahtzee."""
 import pygame
 import random
 import os
@@ -5,10 +6,11 @@ import sys
 from collections import Counter 
 from score_category import ScoreCategory
 from score_category import Ones, Twos, Threes, Fours, Fives, Sixes, ThreeOfAKind, FourOfAKind, FullHouse, SmallStraight, LargeStraight, Yahtzee,Chance
-# Globalne stałe
+
+# Rozmiar okna gry
 WIDTH, HEIGHT = 1800, 1000
 
-# Kolory
+# Kolory RGB
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (128, 128, 128)

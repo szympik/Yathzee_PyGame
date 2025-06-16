@@ -37,23 +37,19 @@ class Round:
 
     def draw_game_over(self, total_scores):
         self.screen.fill(DARK_GREEN)
-        # Przesunięcie tytułu niżej
         title_text = self.font.render("Koniec gry!", True, (255, 255, 255))
         self.screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 120))
-        # Przesunięcie obrazka niżej
         image_rect = self.game_over_image.get_rect(center=(WIDTH // 2, 200))
         self.screen.blit(self.game_over_image, image_rect)
-        # Sortowanie wyników malejąco po wyniku
         sorted_scores = sorted(total_scores, key=lambda x: x[1], reverse=True)
 
         medal_colors = [
-            (255, 215, 0),  # złoto
-            (192, 192, 192),  # srebro
-            (205, 127, 50)  # brąz
+            (255, 215, 0),
+            (192, 192, 192),
+            (205, 127, 50)
         ]
         white = (255, 255, 255)
 
-        # Przesunięcie wyników niżej
         start_y = 320
         line_height = 40
 
@@ -62,14 +58,13 @@ class Round:
 
         for i, (player_name, score) in enumerate(sorted_scores, start=1):
             if score == last_score:
-                rank = last_rank  # ten sam ranking co poprzedni gracz
+                rank = last_rank
             else:
-                rank = i  # nowe miejsce
+                rank = i
 
             last_score = score
             last_rank = rank
 
-            # kolor medalu tylko dla miejsc 1-3 (tie rank)
             if rank <= 3:
                 color = medal_colors[rank - 1]
             else:
@@ -78,7 +73,6 @@ class Round:
             text = self.font.render(f"{rank}. {player_name}: {score}", True, color)
             self.screen.blit(text, (WIDTH // 2 - text.get_width() // 2, start_y + (i - 1) * line_height))
 
-        # Dodaj przycisk "Zagraj ponownie"
         self.play_again_btn.show()
         self.play_again_btn.draw(self.screen)
         pygame.display.flip()
@@ -94,8 +88,6 @@ class Round:
         print("Wyniki zapisane do scores.txt")
 
     def cup_animation(self):
-        
-      
         total_frames = 6
         images = {}
 
@@ -157,7 +149,7 @@ class Round:
                     dice.start_roll(self.dices)
                 self.roll.hide()
                 self.reroll.show()
-                return "roll"  # Zwróć informację o rzucie
+                return "roll"
                 
             elif self.reroll.is_clicked(event.pos):
                 if self.all_dices_selected():
@@ -167,14 +159,13 @@ class Round:
                     self.cup_animation()
                     for dice in self.dices:
                         dice.reroll(self.dices)
-                    return "reroll"  # Zwróć informację o powtórnym rzucie
+                    return "reroll"
                 
             elif self.play_again_btn.is_clicked(event.pos) and self.game_over:
-                # Obsługuje kliknięcie przycisku "Zagraj ponownie" na ekranie końca gry
                 self.reset()
                 self.game_over = False
                 self.current_turn = 1
-                return "play_again"  # Zwróć informację o ponownej grze
+                return "play_again"
                 
             else:
                 for dice in self.dices:
@@ -234,7 +225,6 @@ class Round:
         if self.roll.visible and self.roll_count >= self.max_rolls:
             self.roll.hide()
             self.reroll.show()
-
 
     def reset(self):
         self.roll_count = 0

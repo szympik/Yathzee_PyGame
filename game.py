@@ -13,13 +13,15 @@ music.play()
 
 font = pygame.font.Font("fonts/font.ttf", 36)
 timer_font = pygame.font.Font("fonts/font.ttf", 30)
+
 def main_menu():
+    """Wyświetla menu główne i pozwala wybrać liczbę graczy."""
     num_players = 1
     min_players = 1
     max_players = 6
     menu_running = True
 
-    # Przyciski strzałek
+    # Przyciski do zmiany liczby graczy i startu gry
     left_btn = Button(WIDTH // 2 - 250, HEIGHT // 2 - 25, 60, 40, "", "img/left_arrow.png")
     right_btn = Button(WIDTH // 2 + 190, HEIGHT // 2 - 25, 60, 40, "", "img/right_arrow.png")
     start_btn = Button(WIDTH // 2 - 100, HEIGHT // 2 + 65, 200, 70, "Start")
@@ -56,9 +58,12 @@ def main_menu():
         pygame.display.flip()
 
     return num_players
+
 def choose_difficulty():
+    """Wyświetla ekran wyboru poziomu trudności i zwraca limit czasu tury."""
     font = pygame.font.Font("fonts/font.ttf", 40)
 
+    # Przyciski wyboru poziomu trudności
     easy_btn = Button(WIDTH // 2 - 140, 230, 280, 85, "Łatwy")
     medium_btn = Button(WIDTH // 2 - 140, 340, 280, 85, "Średni")
     hard_btn = Button(WIDTH // 2 - 140, 450, 280, 85, "Trudny")
@@ -83,24 +88,26 @@ def choose_difficulty():
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if easy_btn.is_clicked(event.pos):
-                    return None  # brak limitu
+                    return None  # brak limitu czasu
                 elif medium_btn.is_clicked(event.pos):
                     return 40  # 40 sekund
                 elif hard_btn.is_clicked(event.pos):
                     return 20  # 20 sekund
-       
+
 def add_players(num_players):
+    """Tworzy listę graczy, pobiera ich imiona i przypisuje każdemu własny scoreboard i rundę."""
     players = []
     for i in range(num_players):
         new_scoreboard = Scoreboard()
-        new_round = Round(screen)  # TYLKO screen, bez scoreboard
-        new_player = Player(new_scoreboard, new_round)
+        new_round = Round(screen)
+        new_player = Player(new_scoreboard, new_round,i)
         new_player.name_player(screen, font)
         players.append(new_player)
     return players
 
-    
+
 def main():
+    """Główna pętla gry. Obsługuje logikę rozgrywki, zmiany graczy, wyświetlanie wyników i restart gry."""
     clock = pygame.time.Clock()
     while True:
         num_players = main_menu()
@@ -108,7 +115,7 @@ def main():
         players = add_players(num_players)
         current_player_index = 0
         running = True
-        turn_start_time = pygame.time.get_ticks()  # start tury
+        turn_start_time = pygame.time.get_ticks()
         timer_font = pygame.font.Font("fonts/font.ttf", 30)
 
         while running:
@@ -122,8 +129,8 @@ def main():
             else:
                 time_left = None
 
+            # Automatyczna zmiana gracza po upływie czasu
             if time_limit and (current_time - turn_start_time) >= time_limit * 1000:
-                # Czas minął – przejdź do następnego gracza
                 current_player_index = (current_player_index + 1) % len(players)
                 game_round.next_turn()
                 turn_start_time = pygame.time.get_ticks()
@@ -133,10 +140,11 @@ def main():
                 if event.type == pygame.QUIT:
                     running = False
                 elif not game_round.is_game_over() and event.type == pygame.MOUSEBUTTONDOWN:
+                    # Kliknięcie w pole punktacji kończy turę gracza
                     if game_round.roll_count > 0 and scoreboard.handle_click(event.pos, game_round.get_dices()):
                         current_player_index = (current_player_index + 1) % len(players)
                         game_round.next_turn()
-                        turn_start_time = pygame.time.get_ticks()  # reset timera
+                        turn_start_time = pygame.time.get_ticks()
                     else:
                         event_result = game_round.handle_events(event, scoreboard, current_player.name, time_limit)
                         if event_result in ("roll", "reroll"):
@@ -144,10 +152,10 @@ def main():
                         elif event_result == False:
                             running = False
 
+            # Sprawdzenie końca gry i obsługa przycisku "Zagraj ponownie"
             if all(player.round.is_game_over() for player in players):
                 total_scores = [(player.name, player.scoreboard.total_score()) for player in players]
                 game_round.draw_game_over(total_scores)
-                # Obsługa przycisku 'Zagraj ponownie'
                 play_again = False
                 while not play_again:
                     for event in pygame.event.get():
@@ -158,21 +166,21 @@ def main():
                             play_again = True
                             break
                     pygame.time.wait(50)
-                break  # restartuje całą pętlę main() od nowa
+                break
             else:
                 if not game_round.is_game_over():
                     game_round.update_roll_buttons()
                     game_round.update_dices()
                     game_round.draw_game(scoreboard, current_player.name, time_limit)
 
-                    # Rysuj timer, jeśli jest limit czasu
+                    # Wyświetlanie timera jeśli jest limit czasu
                     if time_left is not None:
                         if time_left < 5:
-                            color = (255, 0, 0)  #  czerwony
+                            color = (255, 0, 0)
                         elif time_left < 10:
-                            color = (255, 255, 0)  #  żółty
+                            color = (255, 255, 0)
                         else:
-                            color = (255, 255, 255)  #  biały
+                            color = (255, 255, 255)
 
                         timer_text = timer_font.render(f"Pozostały czas: {time_left} s", True, color)
                         screen.blit(timer_text, (WIDTH - timer_text.get_width() - 20, 20))
@@ -188,5 +196,4 @@ def main():
 
 
 if __name__ == "__main__":
-    
     main()
