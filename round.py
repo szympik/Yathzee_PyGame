@@ -3,7 +3,7 @@ from dice import Dice
 from button import Button
 import datetime
 class Round:
-    def __init__(self, screen, current_turn=1, max_turns=1, max_rolls=3):
+    def __init__(self, screen, current_turn=1, max_turns=13, max_rolls=3):
         self.screen = screen
         self.current_turn = current_turn
         self.max_turns = max_turns
