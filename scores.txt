@@ -9,3 +9,18 @@ a: 1
 Wyniki gry 2025-06-16 16:08 :
 a: 1
 
+Wyniki gry 2025-06-16 16:13 :
+a: 1
+
+Wyniki gry 2025-06-16 16:13 :
+a: 2
+
+Wyniki gry 2025-06-16 16:13 :
+a: 6
+
+Wyniki gry 2025-06-16 16:13 :
+abc: 2
+
+Wyniki gry 2025-06-16 16:14 :
+a: 1
+

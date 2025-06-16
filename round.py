@@ -12,6 +12,7 @@ class Round:
         self.dices = Dice.add_dice()
         self.roll = Button(WIDTH // 2 - 150, HEIGHT - 160, 240, 90, "Rzuć kostką")
         self.reroll = Button(WIDTH // 2 - 150, HEIGHT - 160, 240, 90, "Ponownie")
+        self.play_again_btn = Button(WIDTH // 2 - 170, 680, 340, 90, "Zagraj ponownie")
         self.roll.show()
         self.reroll.hide()
         self.font = pygame.font.Font("fonts/font.ttf", 36)
@@ -77,6 +78,9 @@ class Round:
             text = self.font.render(f"{rank}. {player_name}: {score}", True, color)
             self.screen.blit(text, (WIDTH // 2 - text.get_width() // 2, start_y + (i - 1) * line_height))
 
+        # Dodaj przycisk "Zagraj ponownie"
+        self.play_again_btn.show()
+        self.play_again_btn.draw(self.screen)
         pygame.display.flip()
         self.scores_to_txt(sorted_scores)
 
@@ -165,6 +169,13 @@ class Round:
                         dice.reroll(self.dices)
                     return "reroll"  # Zwróć informację o powtórnym rzucie
                 
+            elif self.play_again_btn.is_clicked(event.pos) and self.game_over:
+                # Obsługuje kliknięcie przycisku "Zagraj ponownie" na ekranie końca gry
+                self.reset()
+                self.game_over = False
+                self.current_turn = 1
+                return "play_again"  # Zwróć informację o ponownej grze
+                
             else:
                 for dice in self.dices:
                     dice.toggle_selected(event.pos)
@@ -245,3 +256,8 @@ class Round:
                 if not dice.selected:
                     return False
             return True
+
+    def play_again_clicked(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            return self.play_again_btn.is_clicked(event.pos)
+        return False

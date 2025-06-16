@@ -102,76 +102,86 @@ def add_players(num_players):
     
 def main():
     clock = pygame.time.Clock()
-    num_players = main_menu()
-    time_limit = choose_difficulty()
-    players = add_players(num_players)
+    while True:
+        num_players = main_menu()
+        time_limit = choose_difficulty()
+        players = add_players(num_players)
+        current_player_index = 0
+        running = True
+        turn_start_time = pygame.time.get_ticks()  # start tury
+        timer_font = pygame.font.Font("fonts/font.ttf", 30)
 
-    current_player_index = 0
-    running = True
-    turn_start_time = pygame.time.get_ticks()  # start tury
-    timer_font = pygame.font.Font("fonts/font.ttf", 30)
+        while running:
+            current_player = players[current_player_index]
+            scoreboard = current_player.scoreboard
+            game_round = current_player.round
 
-    while running:
-        current_player = players[current_player_index]
-        scoreboard = current_player.scoreboard
-        game_round = current_player.round
-
-        current_time = pygame.time.get_ticks()
-        if time_limit:
-            time_left = max(0, time_limit - (current_time - turn_start_time) // 1000)
-        else:
-            time_left = None
-
-        if time_limit and (current_time - turn_start_time) >= time_limit * 1000:
-            # Czas minął – przejdź do następnego gracza
-            current_player_index = (current_player_index + 1) % len(players)
-            game_round.next_turn()
-            turn_start_time = pygame.time.get_ticks()
-            continue
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif not game_round.is_game_over() and event.type == pygame.MOUSEBUTTONDOWN:
-                if game_round.roll_count > 0 and scoreboard.handle_click(event.pos, game_round.get_dices()):
-                    current_player_index = (current_player_index + 1) % len(players)
-                    game_round.next_turn()
-                    turn_start_time = pygame.time.get_ticks()  # reset timera
-                else:
-                    event_result = game_round.handle_events(event, scoreboard, current_player.name, time_limit)
-                    if event_result in ("roll", "reroll"):
-                        game_round.increase_roll_count()
-                    elif event_result == False:
-                        running = False
-
-        if all(player.round.is_game_over() for player in players):
-            total_scores = [(player.name, player.scoreboard.total_score()) for player in players]
-            game_round.draw_game_over(total_scores)
-            pygame.time.delay(5000)
-            running = False
-        else:
-            if not game_round.is_game_over():
-                game_round.update_roll_buttons()
-                game_round.update_dices()
-                game_round.draw_game(scoreboard, current_player.name,time_limit)
-
-                # Rysuj timer, jeśli jest limit czasu
-                if time_left is not None:
-                    if time_left < 5:
-                        color = (255, 0, 0)  #  czerwony
-                    elif time_left < 10:
-                        color = (255, 255, 0)  #  żółty
-                    else:
-                        color = (255, 255, 255)  #  biały
-
-                    timer_text = timer_font.render(f"Pozostały czas: {time_left} s", True, color)
-                    screen.blit(timer_text, (WIDTH - timer_text.get_width() - 20, 20))
+            current_time = pygame.time.get_ticks()
+            if time_limit:
+                time_left = max(0, time_limit - (current_time - turn_start_time) // 1000)
             else:
-                current_player_index = (current_player_index + 1) % len(players)
-                turn_start_time = pygame.time.get_ticks()
+                time_left = None
 
-        pygame.display.flip()
-        clock.tick(60)
+            if time_limit and (current_time - turn_start_time) >= time_limit * 1000:
+                # Czas minął – przejdź do następnego gracza
+                current_player_index = (current_player_index + 1) % len(players)
+                game_round.next_turn()
+                turn_start_time = pygame.time.get_ticks()
+                continue
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif not game_round.is_game_over() and event.type == pygame.MOUSEBUTTONDOWN:
+                    if game_round.roll_count > 0 and scoreboard.handle_click(event.pos, game_round.get_dices()):
+                        current_player_index = (current_player_index + 1) % len(players)
+                        game_round.next_turn()
+                        turn_start_time = pygame.time.get_ticks()  # reset timera
+                    else:
+                        event_result = game_round.handle_events(event, scoreboard, current_player.name, time_limit)
+                        if event_result in ("roll", "reroll"):
+                            game_round.increase_roll_count()
+                        elif event_result == False:
+                            running = False
+
+            if all(player.round.is_game_over() for player in players):
+                total_scores = [(player.name, player.scoreboard.total_score()) for player in players]
+                game_round.draw_game_over(total_scores)
+                # Obsługa przycisku 'Zagraj ponownie'
+                play_again = False
+                while not play_again:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            exit()
+                        elif game_round.play_again_clicked(event):
+                            play_again = True
+                            break
+                    pygame.time.wait(50)
+                break  # restartuje całą pętlę main() od nowa
+            else:
+                if not game_round.is_game_over():
+                    game_round.update_roll_buttons()
+                    game_round.update_dices()
+                    game_round.draw_game(scoreboard, current_player.name, time_limit)
+
+                    # Rysuj timer, jeśli jest limit czasu
+                    if time_left is not None:
+                        if time_left < 5:
+                            color = (255, 0, 0)  #  czerwony
+                        elif time_left < 10:
+                            color = (255, 255, 0)  #  żółty
+                        else:
+                            color = (255, 255, 255)  #  biały
+
+                        timer_text = timer_font.render(f"Pozostały czas: {time_left} s", True, color)
+                        screen.blit(timer_text, (WIDTH - timer_text.get_width() - 20, 20))
+                else:
+                    current_player_index = (current_player_index + 1) % len(players)
+                    turn_start_time = pygame.time.get_ticks()
+
+            pygame.display.flip()
+            clock.tick(60)
 
     pygame.quit()
     exit()
