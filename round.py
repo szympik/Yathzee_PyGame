@@ -163,7 +163,7 @@ class Round:
 
     def draw_turn_info(self):
         text = self.font.render(f"Runda: {self.current_turn} / {self.max_turns}   Rzuty: {self.roll_count} / {self.max_rolls}", True, (255, 255, 255))
-        self.screen.blit(text, (50, 10))
+        self.screen.blit(text, (50, 5))
 
     def draw_game(self, scoreboard, player_name,difficulty):
         self.screen.fill(BLACK)
@@ -185,7 +185,7 @@ class Round:
 
         if player_name:
             name_text = self.font.render(f"Tura gracza: {player_name}", True, (255,255,255))
-            self.screen.blit(name_text, (370, 10))
+            self.screen.blit(name_text, (430, 5))
 
         pygame.display.flip()
 

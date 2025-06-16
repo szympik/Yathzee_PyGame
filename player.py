@@ -23,7 +23,7 @@ class Player():
         text = ""
         done = False
 
-        # Jeszcze większy przycisk "Potwierdź"
+
         confirm_btn = Button(WIDTH // 2 - 120, HEIGHT // 2 + 70, 240, 65, "Potwierdź")
         confirm_btn.show()
 

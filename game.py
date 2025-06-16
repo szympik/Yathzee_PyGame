@@ -5,10 +5,8 @@ from button import Button
 from player import Player
 
 pygame.init()
-
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Yahtzee")
-
 music = pygame.mixer.Sound('sound/jazz.mp3')
 music.set_volume(0.0)
 music.play()
@@ -60,7 +58,7 @@ def main_menu():
     return num_players
 def choose_difficulty():
     font = pygame.font.Font("fonts/font.ttf", 40)
-    # Jeszcze większe przyciski poziomów
+
     easy_btn = Button(WIDTH // 2 - 140, 230, 280, 85, "Łatwy")
     medium_btn = Button(WIDTH // 2 - 140, 340, 280, 85, "Średni")
     hard_btn = Button(WIDTH // 2 - 140, 450, 280, 85, "Trudny")
@@ -105,7 +103,7 @@ def add_players(num_players):
 def main():
     clock = pygame.time.Clock()
     num_players = main_menu()
-    time_limit = choose_difficulty()  # None, 20 lub 10 sekund
+    time_limit = choose_difficulty()
     players = add_players(num_players)
 
     current_player_index = 0
