@@ -18,5 +18,6 @@ TRANSPARENT = (0, 0, 0, 0)
 GOLD = (183, 147, 60)
 YELLOW = (212, 175, 55) 
 RUBY = (199, 44, 72)
+DARK_GREEN = (5, 15, 8)
 
 

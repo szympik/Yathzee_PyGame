@@ -1,9 +1,9 @@
 from _import import *
 from dice import Dice
 from button import Button
-
+import datetime
 class Round:
-    def __init__(self, screen, current_turn=1, max_turns=5, max_rolls=3):
+    def __init__(self, screen, current_turn=1, max_turns=1, max_rolls=3):
         self.screen = screen
         self.current_turn = current_turn
         self.max_turns = max_turns
@@ -19,7 +19,7 @@ class Round:
         self.background = pygame.image.load("img/dice_background.png")
         self.background = pygame.transform.scale(self.background, (1200, 800))
         self.game_over_image = pygame.image.load("img/game_over.png")
-        self.game_over_image = pygame.transform.scale(self.game_over_image, (300, 100))
+        self.game_over_image = pygame.transform.scale(self.game_over_image, (350, 210))
     def draw_empty_cup(self):
         cup_image = pygame.image.load("img/kubek_animacja/6.png")
         cup_image = pygame.transform.scale(cup_image, (400, 400))
@@ -35,10 +35,12 @@ class Round:
         self.screen.blit(cup_image, (cup_x, cup_y))
 
     def draw_game_over(self, total_scores):
-        self.screen.fill(BLACK)
+        self.screen.fill(DARK_GREEN)
+        # Przesunięcie tytułu niżej
         title_text = self.font.render("Koniec gry!", True, (255, 255, 255))
-        self.screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 50))
-        image_rect = self.game_over_image.get_rect(center=(WIDTH // 2, 80))
+        self.screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 120))
+        # Przesunięcie obrazka niżej
+        image_rect = self.game_over_image.get_rect(center=(WIDTH // 2, 200))
         self.screen.blit(self.game_over_image, image_rect)
         # Sortowanie wyników malejąco po wyniku
         sorted_scores = sorted(total_scores, key=lambda x: x[1], reverse=True)
@@ -50,7 +52,8 @@ class Round:
         ]
         white = (255, 255, 255)
 
-        start_y = 150
+        # Przesunięcie wyników niżej
+        start_y = 320
         line_height = 40
 
         last_score = None
@@ -75,6 +78,16 @@ class Round:
             self.screen.blit(text, (WIDTH // 2 - text.get_width() // 2, start_y + (i - 1) * line_height))
 
         pygame.display.flip()
+        self.scores_to_txt(sorted_scores)
+
+    def scores_to_txt(self, total_scores):
+        data = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        with open("scores.txt", "a", encoding="utf-8") as file:  
+            file.write(f"Wyniki gry {data} :\n")
+            for player_name, score in total_scores:
+                file.write(f"{player_name}: {score}\n")
+            file.write("\n")  
+        print("Wyniki zapisane do scores.txt")
 
     def cup_animation(self):
         
@@ -166,7 +179,7 @@ class Round:
         self.screen.blit(text, (50, 5))
 
     def draw_game(self, scoreboard, player_name,difficulty):
-        self.screen.fill(BLACK)
+        self.screen.fill(DARK_GREEN)
         self.screen.blit(self.background, (600, 0))
         scoreboard.draw(self.screen,self.get_dices(),difficulty,self.roll_count)
 

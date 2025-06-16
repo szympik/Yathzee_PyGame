@@ -42,15 +42,15 @@ def main_menu():
                 elif start_btn.is_clicked(event.pos):
                     menu_running = False
 
-        screen.fill((0, 0, 0))
-        title_text = font.render("Yahtzee", True, (255, 255, 255))
+        screen.fill(DARK_GREEN)
+        title_text = font.render("Yahtzee", True, GOLD)
         screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, HEIGHT // 2 - 120))
 
         left_btn.draw(screen)
         right_btn.draw(screen)
         start_btn.draw(screen)
 
-        players_text = font.render(f"Liczba graczy: {num_players}", True, (255,255,255))
+        players_text = font.render(f"Liczba graczy: {num_players}", True, GOLD)
         screen.blit(players_text, (WIDTH // 2 - players_text.get_width() // 2, HEIGHT // 2 - players_text.get_height() // 2))
 
         pygame.display.flip()
@@ -68,8 +68,8 @@ def choose_difficulty():
     hard_btn.show()
 
     while True:
-        screen.fill((0, 0, 0))
-        title_text = font.render("Wybierz poziom trudności", True, (255, 255, 255))
+        screen.fill(DARK_GREEN)
+        title_text = font.render("Wybierz poziom trudności", True, GOLD)
         screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 150))
 
         for btn in [easy_btn, medium_btn, hard_btn]:

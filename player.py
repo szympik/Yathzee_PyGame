@@ -53,12 +53,12 @@ class Player():
                         if len(text) < 15:  # limit znaków
                             text += event.unicode
 
-            screen.fill((0, 0, 0))
-            prompt = font.render("Podaj nazwe gracza: ", True, (255,255,255))
+            screen.fill(DARK_GREEN)
+            prompt = font.render("Podaj nazwe gracza: ", True, GOLD)
             screen.blit(prompt, (WIDTH // 2 - prompt.get_width() // 2, HEIGHT // 2 - 80))
-            pygame.draw.rect(screen, color, input_box, 2)
-            txt_surface = font.render(text, True, (255,255,255))
-            screen.blit(txt_surface, (input_box.x+10, input_box.y+10))
+            pygame.draw.rect(screen, YELLOW, input_box, 2)
+            txt_surface = font.render(text, True, GOLD)
+            screen.blit(txt_surface, (input_box.x+10, input_box.y+2))
             confirm_btn.draw(screen)
             pygame.display.flip()
         self.name = text
